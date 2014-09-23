@@ -20,7 +20,18 @@ In your templates
 {% for content in site.data.fridge.content %}
 
   <h1>{{content.title}}</h1>
-  {{content.body | markdown}}
+  {{content.body | markdownify}}
+
+{% endfor %}
+```
+
+Using Jekyll filters
+
+```liquid
+{% assign pages = site.data.fridge.content | where:"title", "page" | sort:"title" %}
+{% for page in pages %}
+
+  <li><a href="{{page.slug}}">{{page.title}}</a></li>
 
 {% endfor %}
 ```

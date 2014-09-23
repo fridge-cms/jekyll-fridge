@@ -30,15 +30,22 @@ module Jekyll
 
   end
 
-  class FridgeContentWrapper
+  class FridgeContentWrapper < Array
+
+    include Jekyll::Filters
+
     def initialize(client, base)
       @client = client
       @base = base
+      super []
     end
 
     def to_liquid
-      content = @client.get(@base)
-      content.map { |m| FridgeModelWrapper.new m }
+      unless @content
+        @content = @client.get(@base)
+        @content.each{ |m| self << FridgeModelWrapper.new(m) }
+      end
+      self
     end
   end
 
@@ -47,31 +54,13 @@ module Jekyll
       @model = model
     end
 
+    def inspect
+      @data
+    end
+
     def to_liquid
-      # @model
-      {
-        'title' => @model.title
-      }
+      @data ||= Hash[@model.attrs.map{ |k, v| [k.to_s, v]}]
     end
   end
 
-  # class FridgeContentTag < Liquid::Tag
-
-  #   def initialize(tag_name, markup, tokens)
-  #     p markup
-  #     super
-  #   end
-
-  #   def render(context)
-  #     p "TEST"
-  #     client = FridgeApi.client({
-  #       :client_id => context.registers[:site].config['fridge']['client_id'],
-  #       :client_secret => context.registers[:site].config['fridge']['client_secret']
-  #     })
-  #     client.get("content")
-  #   end
-  # end
-
 end
-
-# Liquid::Template.register_tag('fridge.content', Jekyll::FridgeContentTag)
