@@ -28,10 +28,13 @@ In your templates
 Using Jekyll filters
 
 ```liquid
-{% assign pages = site.data.fridge.content | where:"title", "page" | sort:"title" %}
+{% assign browsers = site.data.fridge.content | where:"title", "Firefox" %}
+{% for browser in browsers %}
+  <li>{{browser.title}}</li>
+{% endfor %}
+
+{% assign pages = site.data.fridge.content | sort:"title" %}
 {% for page in pages %}
-
-  <li><a href="{{page.slug}}">{{page.title}}</a></li>
-
+  <li>{{page.title}}</li>
 {% endfor %}
 ```

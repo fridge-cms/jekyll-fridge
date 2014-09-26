@@ -32,8 +32,6 @@ module Jekyll
 
   class FridgeContentWrapper < Array
 
-    include Jekyll::Filters
-
     def initialize(client, base)
       @client = client
       @base = base
