@@ -3,6 +3,13 @@ jekyll-fridge
 
 Jekyll helper for adding Fridge content to your Jekyll site.
 
+Requirements
+----
+
+```bash
+$ gem install fridge_api
+```
+
 Usage
 ----
 
