@@ -7,11 +7,19 @@ module Jekyll
     priority :low
 
     def generate(site)
-      site.data['fridge'] = FridgeApiWrapper.new site.config['fridge']
+      # get api configuration from _config.yml
+      #
+      # fridge:
+      #   client_id: sk_xxxx
+      #   client_secret: xxxx
+      api_config = site.config['fridge']
+
+      # set site.fridge as plugin entry
+      site.config['fridge'] = Client.new api_config
     end
   end
 
-  class FridgeApiWrapper
+  class Client
 
     def initialize(config)
       @client = FridgeApi.client({
@@ -20,17 +28,26 @@ module Jekyll
       })
     end
 
+    def types
+      @types ||= @client.get("types")
+      Hash[@types.map { |type|
+        [type.slug, type.attrs.merge({
+          'content' => FridgeContent.new(@client, "content?type=#{type.slug}")
+        })]
+      }]
+    end
+
     def to_liquid
       {
-        'content' => FridgeContentWrapper.new(@client, "content"),
-        'collections' => FridgeContentWrapper.new(@client, "collections"),
-        'settings' => FridgeContentWrapper.new(@client, "settings")
-      }
+        'content' => FridgeContent.new(@client, "content"),
+        'collections' => FridgeContent.new(@client, "collections"),
+        'settings' => FridgeSettings.new(@client)
+      }.merge(types)
     end
 
   end
 
-  class FridgeContentWrapper < Array
+  class FridgeContent < Array
 
     def initialize(client, base)
       @client = client
@@ -41,13 +58,27 @@ module Jekyll
     def to_liquid
       unless @content
         @content = @client.get(@base)
-        @content.each{ |m| self << FridgeModelWrapper.new(m) }
+        @content.each{ |m| self << Model.new(m) }
       end
       self
     end
   end
 
-  class FridgeModelWrapper
+  class FridgeSettings
+    def initialize(client)
+      @client = client
+    end
+
+    def settings
+      @settings ||= @client.get("settings")
+    end
+
+    def to_liquid
+      Hash[settings.map{ |set| [set.slug, Model.new(set)]}]
+    end
+  end
+
+  class Model
     def initialize(model)
       @model = model
     end

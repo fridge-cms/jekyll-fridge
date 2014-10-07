@@ -24,7 +24,7 @@ fridge:
 In your templates
 
 ```liquid
-{% for content in site.data.fridge.content %}
+{% for content in site.fridge.content %}
 
   <h1>{{content.title}}</h1>
   {{content.body | markdownify}}
@@ -35,13 +35,21 @@ In your templates
 Using Jekyll filters
 
 ```liquid
-{% assign browsers = site.data.fridge.content | where:"title", "Firefox" %}
+{% assign browsers = site.fridge.content | where:"title", "Firefox" %}
 {% for browser in browsers %}
   <li>{{browser.title}}</li>
 {% endfor %}
 
-{% assign pages = site.data.fridge.content | sort:"title" %}
+{% assign pages = site.fridge.content | sort:"title" %}
 {% for page in pages %}
   <li>{{page.title}}</li>
+{% endfor %}
+```
+
+Content based on type
+
+```liquid
+{% for event in site.fridge.event.content %}
+  ...
 {% endfor %}
 ```
