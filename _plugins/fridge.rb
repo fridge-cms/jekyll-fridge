@@ -76,6 +76,10 @@ module Jekyll
     def settings
       ContentDrop.new(@client, "settings")
     end
+    
+    def types
+      ContentDrop.new(@client, "types")
+    end
 
     def users
       ContentDrop.new(@client, "users")
