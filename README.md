@@ -24,32 +24,34 @@ fridge:
 In your templates
 
 ```liquid
-{% for content in site.fridge.content %}
+<h1>{{site.fridge.settings.home.title}}</h1>
 
-  <h1>{{content.title}}</h1>
-  {{content.body | markdownify}}
+<nav>
+  {% for item in site.fridge.navigation.content %}
+    <li>{{item.title}}</li>
+  {% endfor %}
+</nav>
 
+{{site.fridge.content.15.body | markdownify }}
+
+{% for posts in site.fridge.content.blog_post %}
+  <li>Post: {{post.title}}</li>
 {% endfor %}
 ```
 
 Using Jekyll filters
 
 ```liquid
-{% assign browsers = site.fridge.content | where:"title", "Firefox" %}
-{% for browser in browsers %}
+{% assign firefoxes = site.fridge.browser.content | where:"title", "Firefox" %}
+{% for browser in firefoxes %}
   <li>{{browser.title}}</li>
 {% endfor %}
 
-{% assign pages = site.fridge.content | sort:"title" %}
+{% assign pages = site.fridge.content.page | sort:"title" %}
 {% for page in pages %}
   <li>{{page.title}}</li>
 {% endfor %}
 ```
 
-Content based on type
+`where` filter currently depends on https://github.com/jekyll/jekyll/pull/2980
 
-```liquid
-{% for event in site.fridge.event.content %}
-  ...
-{% endfor %}
-```
