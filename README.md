@@ -10,6 +10,13 @@ Requirements
 $ gem install fridge_api
 ```
 
+Installation
+----
+
+Put `fridge.rb` in your `_plugins` folder.
+
+Make sure you have the `fridge_api` gem installed.
+
 Usage
 ----
 
