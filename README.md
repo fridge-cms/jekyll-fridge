@@ -60,5 +60,5 @@ Using Jekyll filters
 {% endfor %}
 ```
 
-`where` filter currently depends on https://github.com/jekyll/jekyll/pull/2980
+`where` filter currently depends on https://github.com/jekyll/jekyll/pull/2986
 
