@@ -32,6 +32,7 @@ module Jekyll
       #   client_id: sk_xxxx
       #   client_secret: xxxx
       api_config = site.config['fridge']
+      api_config['asset_dir'] ||= 'assets'
 
       # set site.fridge as plugin entry
       site.config['fridge'] = Client.new api_config
@@ -40,11 +41,14 @@ module Jekyll
 
   class Client < Liquid::Drop
 
+    attr_reader :client, :config
+
     def initialize(config)
       @client = FridgeApi.client({
         :client_id => config['client_id'],
         :client_secret => config['client_secret']
       })
+      @config = config.delete_if { |k, v| k.to_s.match(/client/) }
     end
 
     def before_method(method)
@@ -147,4 +151,29 @@ module Jekyll
     end
   end
 
+  module FridgeFilters
+    # Filter for fetching assets
+    # Writes static file to asset_dir and returns absolute file path
+    def fridge_asset(input)
+      site = @context.registers[:site]
+      asset_dir = site.config['fridge'].config['asset_dir']
+      dest_path = File.join(site.dest, asset_dir, input)
+
+      asset = site.config['fridge'].client.get("content/upload/#{input}")
+      return input unless asset
+
+      path = File.join(asset_dir, input)
+      # play for keeps
+      # this is so jekyll won't clean up the file
+      site.keep_files << path
+
+      # write file to destination
+      FileUtils.mkdir_p(File.dirname(dest_path))
+      File.write(dest_path, asset)
+      "/#{path}"
+    end
+  end
+
 end
+
+Liquid::Template.register_filter(Jekyll::FridgeFilters)
