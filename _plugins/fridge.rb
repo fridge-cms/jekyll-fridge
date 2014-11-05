@@ -12,6 +12,8 @@ module Jekyll
           [ k.respond_to?(:to_s) ? k.to_s : k, self.stringify_keys_deep(v) ]
         end
       ]
+    when Sawyer::Resource
+      self.stringify_keys_deep(h.to_h)
     when Enumerable
       h.map { |v| self.stringify_keys_deep(v) }
     else
@@ -76,7 +78,7 @@ module Jekyll
     def settings
       ContentDrop.new(@client, "settings")
     end
-    
+
     def types
       ContentDrop.new(@client, "types")
     end
