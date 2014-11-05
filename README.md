@@ -62,3 +62,16 @@ Using Jekyll filters
 
 ~~`where` filter currently depends on https://github.com/jekyll/jekyll/pull/2986~~
 
+Filters
+------
+
+`fridge_asset`
+
+Finds Fridge asset based on file name. Downloads asset to `asset_dir` _(configurable. defaults to `assets`)_ and
+returns a url for the file.
+
+```liquid
+{% for image in site.fridge.content.photo %}
+  <img src="{{ image.name | fridge_asset }}" />
+{% endfor %}
+```
