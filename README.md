@@ -75,3 +75,19 @@ returns a url for the file.
   <img src="{{ image.name | fridge_asset }}" />
 {% endfor %}
 ```
+
+`fridge_choices`
+
+Parses choices from a select/radio/checkbox content type.
+
+```liquid
+{% assign choices = site.fridge.types.blog.categories.choices %}
+{% for category in choices %}
+  {{category}}
+{% endfor %}
+```
+
+Reference
+----
+
+* [Liquid](https://github.com/Shopify/liquid/wiki/Liquid-for-Designers)

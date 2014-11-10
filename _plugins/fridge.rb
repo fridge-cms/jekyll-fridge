@@ -174,6 +174,10 @@ module Jekyll
     end
   end
 
+  def fridge_choices(input)
+    input.lines
+  end
+
 end
 
 Liquid::Template.register_filter(Jekyll::FridgeFilters)
