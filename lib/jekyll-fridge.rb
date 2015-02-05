@@ -13,12 +13,21 @@ module Jekyll
         end
       ]
     when Sawyer::Resource
-      self.stringify_keys_deep(h.to_h)
+      if self.is_fridge_object?(h)
+        Model.new(FridgeApi::Model.new(h.to_h))
+      else
+        self.stringify_keys_deep(h.to_h)
+      end
     when Enumerable
       h.map { |v| self.stringify_keys_deep(v) }
     else
       h
     end
+  end
+
+  # check if an object is fridge-like
+  def self.is_fridge_object?(obj)
+    obj.respond_to?("key?") && (obj.key?(:id) && obj.key?(:document_definition_id))
   end
 
   class Fridge < Generator
@@ -175,7 +184,11 @@ module Jekyll
   end
 
   def fridge_choices(input)
-    input.lines
+    input.lines.map do |line|
+      key, value = line.split ":"
+      value = key if value.nil? || !value
+      { "key" => key.strip, "value" => value.strip }
+    end
   end
 
 end
