@@ -3,19 +3,20 @@ jekyll-fridge
 
 Jekyll helper for adding Fridge content to your Jekyll site.
 
-Requirements
-----
-
-```bash
-$ gem install fridge_api
-```
-
 Installation
 ----
 
-* Put `fridge.rb` in your `_plugins` folder.
-* Make sure you have the `fridge_api` gem installed.
+* Add `jekyll-fridge` to your `Gemfile`:
+
+```Gemfile
+group :jekyll_plugins do
+  gem "jekyll-fridge"
+end
+```
+
 * Read on to configure the plugin.
+
+_[Not using Bundler? There are other ways..](http://jekyllrb.com/docs/plugins/)_
 
 Usage
 ----
