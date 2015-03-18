@@ -182,13 +182,13 @@ module Jekyll
       File.write(dest_path, asset)
       "/#{path}"
     end
-  end
 
-  def fridge_choices(input)
-    input.lines.map do |line|
-      key, value = line.split ":"
-      value = key if value.nil? || !value
-      { "key" => key.strip, "value" => value.strip }
+    def fridge_choices(input)
+      input.lines.map do |line|
+        key, value = line.split ":"
+        value = key if value.nil? || !value
+        { "key" => key.strip, "value" => value.strip }
+      end
     end
   end
 
