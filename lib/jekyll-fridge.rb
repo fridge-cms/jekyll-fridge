@@ -32,9 +32,15 @@ module Jekyll
 
   class Fridge < Generator
     safe true
-    priority :low
+    priority :high
 
     def generate(site)
+      # Reset cache if client already exists
+      if site.config['fridge'].kind_of?(Client)
+        site.config['fridge'].reset!()
+        return
+      end
+
       # get api configuration from _config.yml
       #
       # fridge:
@@ -58,22 +64,32 @@ module Jekyll
         :client_secret => config['client_secret']
       })
       @config = config.delete_if { |k, v| k.to_s.match(/client/) }
+      reset!()
+    end
+
+    def get(path)
+      return @cache[path] if @cache.has_key?(path)
+      @cache[path] = @client.get(path)
+    end
+
+    def reset!
+      @cache = Hash.new
     end
 
     def before_method(method)
       # try content type
-      type = @client.get("types/#{method}")
+      type = get("types/#{method}")
       if type && type.kind_of?(FridgeApi::Model)
         return Jekyll.stringify_keys_deep(type.attrs.merge({
-          'content' => ContentDrop.new(@client, "content", "type=#{type.slug}")
+          'content' => ContentDrop.new(self, "content", "type=#{type.slug}")
         }))
       end
 
       # try user role
-      role = @client.get("roles/#{method}")
+      role = get("roles/#{method}")
       if role && role.kind_of?(FridgeApi::Model)
         return Jekyll.stringify_keys_deep(role.attrs.merge({
-          'users' => ContentDrop.new(@client, "users", "role=#{role.slug}")
+          'users' => ContentDrop.new(self, "users", "role=#{role.slug}")
         }))
       end
 
@@ -81,23 +97,23 @@ module Jekyll
     end
 
     def content
-      ContentDrop.new(@client, "content")
+      ContentDrop.new(self, "content")
     end
 
     def collections
-      ContentDrop.new(@client, "collections")
+      ContentDrop.new(self, "collections")
     end
 
     def settings
-      ContentDrop.new(@client, "settings")
+      ContentDrop.new(self, "settings")
     end
 
     def types
-      ContentDrop.new(@client, "types")
+      ContentDrop.new(self, "types")
     end
 
     def users
-      ContentDrop.new(@client, "users")
+      ContentDrop.new(self, "users")
     end
 
   end
@@ -165,15 +181,22 @@ module Jekyll
     # Writes static file to asset_dir and returns absolute file path
     def fridge_asset(input)
       return input unless input
-      input = input.first if input.respond_to?("first")
+      if input.respond_to?("first")
+        input = input.first.name
+      end
       site = @context.registers[:site]
       asset_dir = site.config['fridge'].config['asset_dir']
       dest_path = File.join(site.dest, asset_dir, input)
+      path = File.join(asset_dir, input)
+
+      # Check if file already exists
+      if site.keep_files.index(path) != nil
+        return "/#{path}"
+      end
 
       asset = site.config['fridge'].client.get("content/upload/#{input}")
       return input unless asset
 
-      path = File.join(asset_dir, input)
       # play for keeps
       # this is so jekyll won't clean up the file
       site.keep_files << path
