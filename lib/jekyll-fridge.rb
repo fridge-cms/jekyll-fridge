@@ -63,7 +63,7 @@ module Jekyll
         :client_id => config['client_id'],
         :client_secret => config['client_secret']
       })
-      @config = config.delete_if { |k, v| k.to_s.match(/client/) }
+      @config = config.delete_if { |k, v| k.to_s.match(/secret/) || v.to_s.match(/sk/) }
       reset!()
     end
 
