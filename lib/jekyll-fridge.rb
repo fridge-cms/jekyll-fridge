@@ -181,8 +181,8 @@ module Jekyll
     # Writes static file to asset_dir and returns absolute file path
     def fridge_asset(input)
       return input unless input
-      if input.respond_to?("first")
-        input = input.first.name
+      if input.respond_to?('first')
+        input = input.first['name']
       end
       site = @context.registers[:site]
       asset_dir = site.config['fridge'].config['asset_dir']
