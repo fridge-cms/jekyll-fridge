@@ -208,7 +208,8 @@ module Jekyll
     end
 
     def fridge_choices(input)
-      input.lines.map do |line|
+      arr = input.is_a?(String) ? input.lines : input
+      arr.map do |line|
         key, value = line.split ":"
         value = key if value.nil? || !value
         { "key" => key.strip, "value" => value.strip }
