@@ -149,7 +149,7 @@ module Jekyll
     end
 
     def each &block
-      @data ||= @client.get(@base)
+      @data ||= @client.get("#{@base}?#{@query}")
       @data.each do |v|
         m = Model.new v
         if block_given?
