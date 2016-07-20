@@ -199,7 +199,7 @@ module Jekyll
 
       # play for keeps
       # this is so jekyll won't clean up the file
-      site.keep_files << path
+      site.keep_files << Regexp.escape(path)
 
       # write file to destination
       FileUtils.mkdir_p(File.dirname(dest_path))
