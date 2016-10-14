@@ -4,7 +4,7 @@ require 'jekyll-fridge/version'
 
 Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.0'
-  spec.add_dependency 'jekyll', '>= 2.0'
+  spec.add_dependency 'jekyll', '>= 3.0'
   spec.add_dependency 'fridge_api', '~> 0.2.2'
   spec.authors = ["Mike Kruk"]
   spec.email = ['mike@ripeworks.com']
