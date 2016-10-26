@@ -1,5 +1,5 @@
 module Jekyll
   module Fridge
-    VERSION = "0.2.1".freeze
+    VERSION = "1.0.0".freeze
   end
 end
