@@ -37,6 +37,8 @@ module Jekyll
     priority :lowest
 
     def generate(site)
+      return if site.config['fridge_collections'].nil?
+
       client = site.config['fridge']
       site.config['fridge_collections'].each do |type, options|
         options = {
